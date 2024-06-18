@@ -14,5 +14,7 @@ compiler.msg("Whats your name? ")
 compiler.strinp("name")
 compiler.msg("Welcome ")
 compiler.prtinp("name")
+compiler.asciimsg("65")
+compiler.asciimsg("10")
 
-compile.end()
+compiler.end()
