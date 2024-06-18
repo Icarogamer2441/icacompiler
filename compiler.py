@@ -160,8 +160,8 @@ def sum():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write(f"    jmp part_{partnum[0]}\n")
         fi.write(f"part_{partnum[0]}:\n")
-        fi.write(f"    pop rax\n")
         fi.write(f"    pop rbx\n")
+        fi.write(f"    pop rax\n")
         fi.write(f"    add rax, rbx\n")
         fi.write(f"    push rax\n")
 
@@ -170,8 +170,8 @@ def sub():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write(f"    jmp part_{partnum[0]}\n")
         fi.write(f"part_{partnum[0]}:\n")
-        fi.write(f"    pop rax\n")
         fi.write(f"    pop rbx\n")
+        fi.write(f"    pop rax\n")
         fi.write(f"    sub rax, rbx\n")
         fi.write(f"    push rax\n")
 
