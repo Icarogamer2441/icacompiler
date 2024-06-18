@@ -138,8 +138,10 @@ def printstack():
         fi.write(f"part_{partnum[0]}:\n")
         fi.write("    pop rax\n")
         fi.write("    mov rbx, buffer + 19\n")
-        fi.write("    mov byte [rbx], 0x0A\n")
+        fi.write("    mov byte [rbx], 0x0A\n")  # Newline character
         fi.write("    mov rcx, 10\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    js negative_{partnum[0]}\n")  # Jump if negative
         fi.write(f"convert_loop_{partnum[0]}:\n")
         fi.write("    xor rdx, rdx\n")
         fi.write("    div rcx\n")
@@ -148,6 +150,20 @@ def printstack():
         fi.write("    mov [rbx], dl\n")
         fi.write("    test rax, rax\n")
         fi.write(f"    jnz convert_loop_{partnum[0]}\n")
+        fi.write(f"    jmp print_number_{partnum[0]}\n")
+        fi.write(f"negative_{partnum[0]}:\n")
+        fi.write("    neg rax\n")
+        fi.write(f"convert_loop_neg_{partnum[0]}:\n")
+        fi.write("    xor rdx, rdx\n")
+        fi.write("    div rcx\n")
+        fi.write("    add dl, '0'\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov [rbx], dl\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    jnz convert_loop_neg_{partnum[0]}\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov byte [rbx], '-'\n")
+        fi.write(f"print_number_{partnum[0]}:\n")
         fi.write("    mov rax, 1\n")
         fi.write("    mov rdi, 1\n")
         fi.write("    lea rsi, [rbx]\n")
@@ -155,7 +171,64 @@ def printstack():
         fi.write("    sub rdx, rbx\n")
         fi.write("    syscall\n")
 
-def sum():
+def pop():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    pop rax\n")
+
+def createintvar(varname, value):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .data\n")
+        fi.write(f"    {varname} dq {value}\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+
+def prtintvar(varname):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    mov rax, [{varname}]\n")
+        fi.write("    mov rbx, buffer + 19\n")
+        fi.write("    mov byte [rbx], 0x0A\n")  # Newline character
+        fi.write("    mov rcx, 10\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    js negative_{partnum[0]}\n")  # Jump if negative
+        fi.write(f"convert_loop_{partnum[0]}:\n")
+        fi.write("    xor rdx, rdx\n")
+        fi.write("    div rcx\n")
+        fi.write("    add dl, '0'\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov [rbx], dl\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    jnz convert_loop_{partnum[0]}\n")
+        fi.write(f"    jmp print_number_{partnum[0]}\n")
+        fi.write(f"negative_{partnum[0]}:\n")
+        fi.write("    neg rax\n")
+        fi.write(f"convert_loop_neg_{partnum[0]}:\n")
+        fi.write("    xor rdx, rdx\n")
+        fi.write("    div rcx\n")
+        fi.write("    add dl, '0'\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov [rbx], dl\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    jnz convert_loop_neg_{partnum[0]}\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov byte [rbx], '-'\n")
+        fi.write(f"print_number_{partnum[0]}:\n")
+        fi.write("    mov rax, 1\n")
+        fi.write("    mov rdi, 1\n")
+        fi.write("    lea rsi, [rbx]\n")
+        fi.write("    mov rdx, buffer + 20\n")
+        fi.write("    sub rdx, rbx\n")
+        fi.write("    syscall\n")
+
+def sumstk():
     partnum[0] += 1
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write(f"    jmp part_{partnum[0]}\n")
@@ -165,7 +238,7 @@ def sum():
         fi.write(f"    add rax, rbx\n")
         fi.write(f"    push rax\n")
 
-def sub():
+def substk():
     partnum[0] += 1
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write(f"    jmp part_{partnum[0]}\n")
