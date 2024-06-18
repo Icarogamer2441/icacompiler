@@ -7,6 +7,10 @@ def start(outputname):
     print(f"INFO: creating {outputname}.asm")
     output_name[0] = outputname
     with open(output_name[0] + ".asm", "w") as fi:
+        fi.write("section .data\n")
+        fi.write("    digits db '0123456789'\n")
+        fi.write("section .bss\n")
+        fi.write("    buffer resb 20\n")
         fi.write("section .text\n")
         fi.write("    global _start\n")
         fi.write("\n")
@@ -116,6 +120,39 @@ def asciimsg(asciinum):
         fi.write("    mov rdi, 1\n")
         fi.write(f"    mov rsi, msg_p{partnum[0]}\n")
         fi.write(f"    mov rdx, 1\n")
+        fi.write("    syscall\n")
+
+def push(pushnum):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    mov rax, {pushnum}\n")
+        fi.write(f"    push rax\n")
+
+def printstack():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    pop rax\n")
+        fi.write("    mov rbx, buffer + 19\n")
+        fi.write("    mov byte [rbx], 0x0A\n")
+        fi.write("    mov rcx, 10\n")
+        fi.write(f"convert_loop_{partnum[0]}:\n")
+        fi.write("    xor rdx, rdx\n")
+        fi.write("    div rcx\n")
+        fi.write("    add dl, '0'\n")
+        fi.write("    dec rbx\n")
+        fi.write("    mov [rbx], dl\n")
+        fi.write("    test rax, rax\n")
+        fi.write(f"    jnz convert_loop_{partnum[0]}\n")
+        fi.write("    mov rax, 1\n")
+        fi.write("    mov rdi, 1\n")
+        fi.write("    lea rsi, [rbx]\n")
+        fi.write("    mov rdx, buffer + 20\n")
+        fi.write("    sub rdx, rbx\n")
         fi.write("    syscall\n")
 
 def end():
