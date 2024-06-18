@@ -155,6 +155,26 @@ def printstack():
         fi.write("    sub rdx, rbx\n")
         fi.write("    syscall\n")
 
+def sum():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    pop rax\n")
+        fi.write(f"    pop rbx\n")
+        fi.write(f"    add rax, rbx\n")
+        fi.write(f"    push rax\n")
+
+def sub():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    pop rax\n")
+        fi.write(f"    pop rbx\n")
+        fi.write(f"    sub rax, rbx\n")
+        fi.write(f"    push rax\n")
+
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    jmp end\n")
