@@ -104,6 +104,20 @@ def strcpy(dest, src):
         fi.write("    test al, al\n")
         fi.write("    jnz copy_loop\n")
 
+def asciimsg(asciinum):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .data\n")
+        fi.write(f"    msg_p{partnum[0]} db {asciinum}, 0\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rax, 1\n")
+        fi.write("    mov rdi, 1\n")
+        fi.write(f"    mov rsi, msg_p{partnum[0]}\n")
+        fi.write(f"    mov rdx, 1\n")
+        fi.write("    syscall\n")
+
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    jmp end\n")
