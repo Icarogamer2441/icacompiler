@@ -35,6 +35,21 @@ compiler.printstack()
 compiler.createintvar("myint", 10)
 compiler.prtintvar("myint")
 
+compiler.createstrvar("msg", "Ive been printed from scratch!', 10, '")
+compiler.newlabel()
+compiler.mov("rax", "1")
+compiler.mov("rdi", "1")
+compiler.mov("rsi", "msg")
+compiler.mov("rdx", "size_of_msg")
+compiler.syscall()
+compiler.createintvar("myint2", 20)
+compiler.msg("myint + myint2:\\n")
+compiler.sumvar("myint", "myint2")
+compiler.prtintvar("myint")
+compiler.msg("myint - myint2:\\n")
+compiler.subvar("myint", "myint2")
+compiler.prtintvar("myint")
+
 # you can print negative numbers in printstack and in printintvar
 
 compiler.end()
