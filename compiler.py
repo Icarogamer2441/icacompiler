@@ -9,11 +9,14 @@ def start(outputname):
     with open(output_name[0] + ".asm", "w") as fi:
         fi.write("section .data\n")
         fi.write("    digits db '0123456789'\n")
+        fi.write("    nl db 10, 0\n")
         fi.write("section .bss\n")
         fi.write("    buffer resb 20\n")
         fi.write("section .text\n")
         fi.write("    global _start\n")
-        fi.write("\n")
+        fi.write("O_WRONLY    equ 1\n")
+        fi.write("O_APPEND    equ 1024\n")
+        fi.write("O_CREAT     equ 64\n")
         fi.write("end:\n")
         fi.write("    mov rax, 60\n")
         fi.write("    mov rdi, 0\n")
@@ -247,6 +250,59 @@ def substk():
         fi.write(f"    pop rax\n")
         fi.write(f"    sub rax, rbx\n")
         fi.write(f"    push rax\n")
+
+def openwritefile(filename):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rax, 2\n")
+        fi.write(f"    mov rdi, {filename}\n")
+        fi.write(f"    mov rsi, O_CREAT+O_WRONLY\n")
+        fi.write(f"    mov rdx, 0644o\n")
+        fi.write("    syscall\n")
+
+def openappendfile(filename):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rax, 2\n")
+        fi.write(f"    mov rdi, {filename}\n")
+        fi.write(f"    mov rsi, O_CREAT+O_APPEND+O_WRONLY\n")
+        fi.write(f"    mov rdx, 0644o\n")
+        fi.write("    syscall\n")
+
+def writefile(contvarname):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rdi, rax\n")
+        fi.write("    mov rax, 1\n")
+        fi.write(f"    mov rsi, {contvarname}\n")
+        fi.write(f"    mov rdx, size_of_{contvarname}\n")
+        fi.write("    syscall\n")
+
+def writenlfile():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rdi, rax\n")
+        fi.write("    mov rax, 1\n")
+        fi.write(f"    mov rsi, nl\n")
+        fi.write(f"    mov rdx, 1\n")
+        fi.write("    syscall\n")
+
+def closefile():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rax, 3\n")
+        fi.write("    pop rdi\n")
+        fi.write("    syscall\n")
 
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
