@@ -304,6 +304,40 @@ def closefile():
         fi.write("    pop rdi\n")
         fi.write("    syscall\n")
 
+def newlabel():
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+
+def mov(register, item):
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    mov {register}, {item}\n")
+
+def syscall():
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    syscall\n")
+
+def sumvar(varname1, varname2):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    mov rax, [{varname1}]\n")
+        fi.write(f"    add rax, [{varname2}]\n")
+        fi.write(f"    mov [{varname1}], rax\n")
+
+def subvar(varname1, varname2):
+    partnum[0] += 1
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write("section .text\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write(f"    mov rax, [{varname1}]\n")
+        fi.write(f"    sub rax, [{varname2}]\n")
+        fi.write(f"    mov [{varname1}], rax\n")
+
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    jmp end\n")
