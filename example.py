@@ -50,6 +50,7 @@ compiler.msg("myint - myint2:\\n")
 compiler.subvar("myint", "myint2")
 compiler.prtintvar("myint")
 # you can use compiler.ret() for ret
+# you can interact with files too, see compiler.py
 
 # you can print negative numbers in printstack and in printintvar
 
