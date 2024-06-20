@@ -338,6 +338,10 @@ def subvar(varname1, varname2):
         fi.write(f"    sub rax, [{varname2}]\n")
         fi.write(f"    mov [{varname1}], rax\n")
 
+def ret():
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write("    ret\n")
+
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    jmp end\n")
