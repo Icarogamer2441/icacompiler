@@ -342,6 +342,36 @@ def ret():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    ret\n")
 
+def pushstr(string):
+    partnum[0] += 1
+    str_len = len(string)
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{partnum[0]}\n")
+        fi.write(f"part_{partnum[0]}:\n")
+        fi.write("    mov rax, 0\n")
+        fi.write("    push rax\n")  # Null terminator
+        for char in reversed(string):
+            fi.write(f"    mov rax, {ord(char)}\n")
+            fi.write("    push rax\n")
+
+def printstackasascii():
+    partnum[0] += 1
+    part = partnum[0]
+    with open(output_name[0] + ".asm", "a") as fi:
+        fi.write(f"    jmp part_{part}\n")
+        fi.write(f"part_{part}:\n")
+        fi.write(f"print_loop_{part}:\n")
+        fi.write("    pop rax\n")
+        fi.write("    test al, al\n")
+        fi.write(f"    jz end_print_loop_{part}\n")
+        fi.write("    mov rsi, rax\n")
+        fi.write("    mov rdi, 1\n")
+        fi.write("    mov rdx, 1\n")
+        fi.write("    mov rax, 1\n")
+        fi.write("    syscall\n")
+        fi.write(f"    jmp print_loop_{part}\n")
+        fi.write(f"end_print_loop_{part}:\n")
+
 def end():
     with open(output_name[0] + ".asm", "a") as fi:
         fi.write("    jmp end\n")
